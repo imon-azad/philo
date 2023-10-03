@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 13:57:24 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/09/21 17:01:22 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/03 01:24:33 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ int check_param(int ac, char **av, t_param *data)
     {
         data->n_time_eat = ft_atoi(av[5]);
         if(data->n_time_eat <= 0)
-            return -1;
+            return (error_msj(2), EXIT_FAILURE);
     }
     if(data->n_philo <= 0 || data->t_die <= 0 || data->t_eat <= 0 || data->t_sleep <= 0)
-        return -1; 
-    return 0;
+        return (error_msj(2), EXIT_FAILURE); 
+    return (EXIT_SUCCESS);
 }
 // 1 Segundo = 1000 milisegundos
 // numeros_filosofos = numero_de_tenedores, tiempo_morir,
@@ -39,21 +39,29 @@ void *mi_funcion(void *arg) {
 }
 void error_msj(int num)
 {
-
-
+    if(num == 1)
+        write(1, "Error: invalid number of arguments.\n",36);
+    if(num == 2)
+        write(1, "Error: invalid arguments.\n",26);
     
 }
 
 int main(int argc, char **argv)
 {
     t_param data;
-    pthread_t hilo;
-    int valor = 42;
+    t_philo *philo;
+    
+    /* pthread_t hilo;
+    int valor = 42; */
     
     if(argc != 5 && argc != 6)
-            return(0);
-            
-    if (pthread_create(&hilo, NULL, mi_funcion, &valor) != 0) {
+            return(error_msj(1),EXIT_FAILURE);
+    if(check_param(argc, argv, &data) == EXIT_FAILURE)
+        return(EXIT_FAILURE);       
+    philo = malloc(sizeof(t_philo) * data.n_philo);
+    
+    
+  /*   if (pthread_create(&hilo, NULL, mi_funcion, &valor) != 0) {
         perror("Error al crear el hilo");
         return 1;
     }
@@ -63,10 +71,7 @@ int main(int argc, char **argv)
     }
 
     printf("Hilo terminado\n");
-    
-
-
-    /* if(check_param(argc, argv, &data) == -1)
-        return(printf("cagaste")); */
-    return 0;
+     */
+    free(philo);
+    return (EXIT_SUCCESS);
 }
