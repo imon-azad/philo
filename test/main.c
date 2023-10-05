@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 13:57:24 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/05 04:15:21 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/05 20:31:18 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void error_msj(int num)
     if(num == 4)
         write(1, "Error: mutex init failed.\n",26);
     if(num == 5)
+        write(1, "Error: failed to init mutex.\n",29);
+    if(num == 6)
         write(1, "Error: failed to create thread.\n",32);
     
 }
@@ -71,16 +73,26 @@ int check_param(int ac, char **av, t_param *data)
 // numeros_filosofos = numero_de_tenedores, tiempo_morir,
 // tiempo_comer, tiempo_dormir, numero_de_veces_que_come
 
-void *mi_funcion(void *arg) {
-    int *numero = (int *)arg;
-    printf("Hola desde el hilo. Valor recibido: %d\n", *numero);
-    return NULL;
+void ft_print_status(t_philo *p, char *str)
+{
+    
 }
 
-void    thread_function(void *work)
+void ft_eat(t_philo *philo)
 {
-
+    pthread_mutex_lock(philo->left_fork);
+    ft_print_status(philo, "has taken a fork");
     
+}
+
+void    *thread_function(void *work)
+{
+    t_philo *philo;
+    philo = (t_philo*)work;
+    printf("test: id philo %i \n", philo->id);
+    ft_eat(philo);
+    
+    return NULL;
 }
 
 int	init_thread(t_param *data, t_philo *philo)
@@ -91,12 +103,20 @@ int	init_thread(t_param *data, t_philo *philo)
     while (i < data->n_philo)
     {
         philo[i].right_fork = philo[(i + 1) % data->n_philo].left_fork;
-        if (pthread_create(&philo->thread_id, NULL, mi_funcion, &philo[i]) != 0)
-            return(error_msj(5),EXIT_FAILURE);
+        if (pthread_create(&philo->thread_id, NULL, &thread_function, &philo[i]) != 0)
+            return(error_msj(6),EXIT_FAILURE);
+        usleep(1);
+
+
+        
+        i++;  
     }
     
-    
+    return 0;
 }
+// https://github.com/m3zh/philo/blob/master/philo/src/thread_routine.c
+// https://github.com/anolivei/Philosophers42
+
 
 int main(int argc, char **argv)
 {
@@ -126,11 +146,11 @@ int main(int argc, char **argv)
 
     
     i = 0;
-    while (i < data.n_philo)
+    /* while (i < data.n_philo)
     {
         printf("id: %i \n", philo[i].id);
         i++;
-    }
+    } */
     
     
   /*   if (pthread_create(&hilo, NULL, mi_funcion, &valor) != 0) {
