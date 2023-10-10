@@ -3,14 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 13:57:24 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/10 03:20:52 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/10 16:41:41 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+long int time_now(void) //devuelve en milisegundos
+{
+	struct timeval	now;
+    if(gettimeofday(&now, NULL) == 0)//devuelve en microsegundos
+        return ((now.tv_sec * 1000) + (now.tv_usec / 1000));
+    else
+        return(EXIT_FAILURE);
+}
 
 void error_msj(int num)
 {
@@ -70,12 +79,16 @@ int check_param(int ac, char **av, t_param *data)
     return (EXIT_SUCCESS);
 }
 // 1 Segundo = 1000 milisegundos
+//1 ms = 1000 microssegundos
+//usleep usa microsegundos.
 // numeros_filosofos = numero_de_tenedores, tiempo_morir,
 // tiempo_comer, tiempo_dormir, numero_de_veces_que_come
 
 void ft_print_status(t_philo *p, char *str)
 {
-    printf("TIME: %i %s\n",p->id, str);
+    printf("%li ", (time_now() - p->param->time));
+    printf("%i %s\n",p->id, str);
+    
 }
 
 void ft_eat(t_philo *philo)
@@ -84,7 +97,9 @@ void ft_eat(t_philo *philo)
     ft_print_status(philo, "has taken a fork");
     pthread_mutex_lock(philo->right_fork);
     ft_print_status(philo, "has taken a fork");
-   
+    ft_print_status(philo,"is eating");
+    usleep((philo->param->t_eat * 1000));
+    philo->last_meal = 0;
     pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
     
@@ -95,6 +110,7 @@ void sleep_think(t_philo *philo)
     //usleep(philo->param->t_sleep);
     
     ft_print_status(philo, "is sleeping");
+    usleep((philo->param->t_sleep * 1000));
     ft_print_status(philo, "is thinking");
     
 }
@@ -103,9 +119,11 @@ void    *thread_function(void *work)
 {
     t_philo *philo;
     philo = (t_philo*)work;
-    printf("--------------: id philo %i ---------\n", philo->id);
-    while (1)
-    {
+    //printf("--------------: id philo %i ---------\n", philo->id);
+    
+   while (1)
+   {
+    
     ft_eat(philo);
     sleep_think(philo);
     }
@@ -123,10 +141,7 @@ int	init_thread(t_param *data, t_philo *philo)
         philo[i].right_fork = philo[(i + 1) % data->n_philo].left_fork;
         if (pthread_create(&philo->thread_id, NULL, &thread_function, &philo[i]) != 0)
             return(error_msj(6),EXIT_FAILURE);
-        usleep(10);
-        
-
-        
+        //usleep(1000000);
         i++;  
     }
     
@@ -135,14 +150,7 @@ int	init_thread(t_param *data, t_philo *philo)
 // https://github.com/m3zh/philo/blob/master/philo/src/thread_routine.c
 // https://github.com/anolivei/Philosophers42
 
-long int time_now(void)
-{
-	struct timeval	now;
 
-	gettimeofday(&now, NULL);
-
-	return ((now.tv_sec * 1000) + (now.tv_usec / 1000));
-}
 
 int main(int argc, char **argv)
 {
@@ -152,8 +160,8 @@ int main(int argc, char **argv)
     i = 0;
     /* pthread_t hilo;
     int valor = 42; */
-    
-    printf("--%li--\n", time_now());
+    data.time = time_now();
+    printf("--%li--\n", data.time);
     
     if(argc != 5 && argc != 6)
             return(error_msj(1),EXIT_FAILURE);
@@ -167,6 +175,7 @@ int main(int argc, char **argv)
         philo[i].meal = 0;
         philo[i].iter = 0;
         philo[i].param = &data;
+        philo[i].last_meal = 0;
         philo[i].left_fork = &data.fork[i];        
         i++;
     }
@@ -175,7 +184,7 @@ int main(int argc, char **argv)
 		return (EXIT_FAILURE);
 
     
-    i = 0;
+    
     /* while (i < data.n_philo)
     {
         printf("id: %i \n", philo[i].id);
@@ -194,6 +203,13 @@ int main(int argc, char **argv)
 
     printf("Hilo terminado\n");
      */
+    i = 0;
+    while (i < data.n_philo)
+    {
+        pthread_join(philo[i].thread_id,NULL);
+        i++;
+    }
+    
     free(philo);
     return (EXIT_SUCCESS);
 }
