@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 14:04:53 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/05 18:56:23 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/10 02:46:43 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 typedef struct s_param
 {
@@ -34,9 +35,11 @@ typedef struct s_philo
     int id;
     int dead;
     int meal;
+    int iter;
+    t_param *param;
     pthread_t		thread_id; //id del hilo creado
-    pthread_mutex_t right_fork;
-    pthread_mutex_t left_fork;
+    pthread_mutex_t *right_fork;
+    pthread_mutex_t *left_fork;
     
 }   t_philo;
 

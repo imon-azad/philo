@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 13:57:24 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/05 20:31:18 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/10 03:20:52 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,27 @@ int check_param(int ac, char **av, t_param *data)
 
 void ft_print_status(t_philo *p, char *str)
 {
-    
+    printf("TIME: %i %s\n",p->id, str);
 }
 
 void ft_eat(t_philo *philo)
 {
     pthread_mutex_lock(philo->left_fork);
     ft_print_status(philo, "has taken a fork");
+    pthread_mutex_lock(philo->right_fork);
+    ft_print_status(philo, "has taken a fork");
+   
+    pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
+    
+}
+
+void sleep_think(t_philo *philo)
+{
+    //usleep(philo->param->t_sleep);
+    
+    ft_print_status(philo, "is sleeping");
+    ft_print_status(philo, "is thinking");
     
 }
 
@@ -89,8 +103,12 @@ void    *thread_function(void *work)
 {
     t_philo *philo;
     philo = (t_philo*)work;
-    printf("test: id philo %i \n", philo->id);
+    printf("--------------: id philo %i ---------\n", philo->id);
+    while (1)
+    {
     ft_eat(philo);
+    sleep_think(philo);
+    }
     
     return NULL;
 }
@@ -105,8 +123,8 @@ int	init_thread(t_param *data, t_philo *philo)
         philo[i].right_fork = philo[(i + 1) % data->n_philo].left_fork;
         if (pthread_create(&philo->thread_id, NULL, &thread_function, &philo[i]) != 0)
             return(error_msj(6),EXIT_FAILURE);
-        usleep(1);
-
+        usleep(10);
+        
 
         
         i++;  
@@ -117,6 +135,14 @@ int	init_thread(t_param *data, t_philo *philo)
 // https://github.com/m3zh/philo/blob/master/philo/src/thread_routine.c
 // https://github.com/anolivei/Philosophers42
 
+long int time_now(void)
+{
+	struct timeval	now;
+
+	gettimeofday(&now, NULL);
+
+	return ((now.tv_sec * 1000) + (now.tv_usec / 1000));
+}
 
 int main(int argc, char **argv)
 {
@@ -126,6 +152,8 @@ int main(int argc, char **argv)
     i = 0;
     /* pthread_t hilo;
     int valor = 42; */
+    
+    printf("--%li--\n", time_now());
     
     if(argc != 5 && argc != 6)
             return(error_msj(1),EXIT_FAILURE);
@@ -137,7 +165,9 @@ int main(int argc, char **argv)
         philo[i].id = i;
         philo[i].dead = 0;
         philo[i].meal = 0;
-        philo[i].left_fork = data.fork[i];        
+        philo[i].iter = 0;
+        philo[i].param = &data;
+        philo[i].left_fork = &data.fork[i];        
         i++;
     }
     
