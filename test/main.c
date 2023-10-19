@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 13:57:24 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/18 13:20:48 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/19 15:34:33 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,30 @@ void ft_print_status(t_philo *p, char *str)
     
 }
 
-void ft_eat(t_philo *philo)
+/* void ft_eat(t_philo *philo)
 {
+    
+    
+}
+
+void sleep_think(t_philo *philo)
+{
+    //usleep(philo->param->t_sleep);
+    
+    
+} */
+
+void    *thread_function(void *work)
+{
+    t_philo *philo;
+    philo = (t_philo*)work;
+    //printf("--------------: id philo %i ---------\n", philo->id);
+    while (!philo->param->flag)
+        continue;
+    if(philo->id & 1)
+    usleep(100);
+    while (!philo->param->finish_flag)
+    {
     pthread_mutex_lock(philo->left_fork);
     ft_print_status(philo, "has taken a fork");
     pthread_mutex_lock(philo->right_fork);
@@ -113,29 +135,10 @@ void ft_eat(t_philo *philo)
     pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
     
-}
-
-void sleep_think(t_philo *philo)
-{
-    //usleep(philo->param->t_sleep);
     
     ft_print_status(philo, "is sleeping");
     usleep((philo->param->t_sleep * 1000));
     ft_print_status(philo, "is thinking");
-    
-}
-
-void    *thread_function(void *work)
-{
-    t_philo *philo;
-    philo = (t_philo*)work;
-    //printf("--------------: id philo %i ---------\n", philo->id);
-    while (!philo->param->flag)
-        continue;
-    while (!philo->param->finish_flag)
-    {
-    ft_eat(philo);
-    sleep_think(philo);
     }
    
     return NULL;
@@ -147,6 +150,7 @@ int check_death(t_philo *philo)
     
     pthread_mutex_lock(philo->param->death);
     now = time_now() - philo->meal_init;
+    //printf("now: %li time_meal: %li \n", now, philo->meal_init);
     if(now >= philo->param->t_die)
     {
         pthread_mutex_unlock(philo->param->death);
@@ -187,17 +191,14 @@ int check_thread(t_param *data, t_philo *philo)
                 data->finish_flag = 1;
             i++;
         }
+        i = 0;
     }
     if(data->meal_flag && philo[data->n_philo - 1].iter == data->n_time_eat)
     {   
         printf("ALL PHILOSOPHERS HAVE EATEN :) \n");
         return(final_print(1),1);
     }
-    
     return(final_print(0), exit(0),1);
-    
-
-    
 }
 
 
@@ -205,7 +206,9 @@ int	init_thread(t_param *data, t_philo *philo)
 {
     int i;
     
+    data->time = time_now();
     i = 0;
+    
     while (i < data->n_philo)
     {
         philo[i].right_fork = philo[(i + 1) % data->n_philo].left_fork;
@@ -215,7 +218,7 @@ int	init_thread(t_param *data, t_philo *philo)
         i++;  
     }
     i = 0;
-    data->time = time_now();
+    
     while (i < data->n_philo)
     {
         philo[i].thread_init = data->time;
@@ -251,10 +254,7 @@ int main(int argc, char **argv)
     t_philo *philo;
     int i;
     i = 0;
-    /* pthread_t hilo;
-    int valor = 42; */
-    printf("--%li--\n", data.time);
-    
+
     if(argc != 5 && argc != 6)
             return(error_msj(1),EXIT_FAILURE);
     if(check_param(argc, argv, &data) == EXIT_FAILURE)
@@ -274,7 +274,7 @@ int main(int argc, char **argv)
     
     if (init_thread(&data, philo))
 		return (EXIT_FAILURE);
-    usleep(1000000);
+    //usleep(1000000);
     check_thread(&data, philo);
     end_thread(&data,philo);
     
