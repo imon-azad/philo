@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 14:04:53 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/18 11:34:36 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/20 16:02:04 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@ typedef struct s_param
     int t_sleep;
     int n_time_eat;
     long int time;
-    int flag;
+    int ready;
     int finish_flag;
     int meal_flag;
     
     
     pthread_mutex_t *fork;
     pthread_mutex_t *death;
+    pthread_mutex_t *printer;
     
     
     
