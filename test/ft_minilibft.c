@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 20:22:53 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/08/31 14:05:03 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/26 13:56:53 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,28 @@ int	ft_atoi(const char *str)
 	}
 	return (num * sign);
 }
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	unsigned int	i;
+	unsigned char	*s1_cpy;
+	unsigned char	*s2_cpy;
+
+	s1_cpy = (unsigned char *)s1;
+	s2_cpy = (unsigned char *)s2;
+	i = 0;
+	while ((s1_cpy[i] != '\0' && i < n) || (s2_cpy[i] != '\0' && i < n))
+	{
+		if (s1_cpy[i] == s2_cpy[i])
+			i++;
+		else if (s1_cpy[i] < s2_cpy[i])
+			return (-1);
+		else
+			return (1);
+	}
+	return (0);
+}
+
 /* int	main (int ac, char **av)
 {
 	printf("%i\n", ft_atoi(av[1]));
