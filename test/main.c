@@ -6,13 +6,15 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 13:57:24 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/26 17:47:48 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/26 20:24:03 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long int	time_now(void)
+//https://github.com/TommyJD93/Philosophers
+
+long long	time_now(void)
 {
 	struct timeval	now;
 
@@ -24,17 +26,20 @@ long int	time_now(void)
 
 void	ft_print_status(t_philo *p, char *str)
 {
-	if (!p->param->finish_flag || ft_strncmp(str, "died", 4) == 0)
+	if (!p->param->finish_flag || ft_strncmp(str, "died", 5) == 0)
 	{
+        ft_usleep(1);
 		pthread_mutex_lock(p->param->printer);
-		printf("%li %i %s\n", (time_now() - p->param->time), p->id, str);
+        /* printf("a %lld\n",time_now());
+        printf("b %lld\n",p->param->time); */
+		printf("%lld %i %s\n", (time_now() - p->param->time), p->id, str);
 		pthread_mutex_unlock(p->param->printer);
 	}
 }
 
-void	ft_usleep(long int time)
+void	ft_usleep(long long time)
 {
-	long int	init_time;
+	long long	init_time;
 
 	init_time = time_now();
 	while ((time_now() - init_time) < time)

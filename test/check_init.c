@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 21:32:21 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/26 17:47:59 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/26 18:32:06 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	check_param(int ac, char **av, t_param *data)
 	data->t_sleep = ft_atoi(av[4]);
 	data->meal_flag = 0;
 	data->ready = 0;
+    data->time = time_now();
 	data->finish_flag = 0;
 	if (ac == 6)
 	{

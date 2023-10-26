@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 14:04:53 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/26 17:37:47 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/26 18:09:18 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_param
 	int				ready;
 	int				finish_flag;
 	int				meal_flag;
-	long int		time;
+	long long		time;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	*death;
 	pthread_mutex_t	*printer;
@@ -39,7 +39,7 @@ typedef struct s_philo
 {
 	int				id;
 	int				iter;
-	long int		meal_init;
+	long long		meal_init;
 	t_param			*param;
 	pthread_t		thread_id;
 	pthread_mutex_t	*right_fork;
@@ -67,8 +67,8 @@ int					ft_atoi(const char *str);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 
 /*Utils*/
-long int			time_now(void);
+long long			time_now(void);
 void				ft_print_status(t_philo *p, char *str);
-void				ft_usleep(long int time);
+void				ft_usleep(long long time);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 21:44:53 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/26 17:09:23 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/26 20:19:55 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,13 @@ int	init_thread(t_param *data, t_philo *philo)
 	}
 	i = 0;
 	while (i < data->n_philo)
-	{
+	{   
+        pthread_mutex_lock(philo->param->printer);
 		philo[i].meal_init = data->time;
 		i++;
+        pthread_mutex_unlock(philo->param->printer);
 	}
-	data->ready = 1;
+	data->ready = 1; //data race
 	return (0);
 }
 
@@ -100,12 +102,15 @@ int	check_death(t_philo *philo)
 	pthread_mutex_lock(philo->param->death);
 	now = time_now() - philo->meal_init;
 	if (now >= philo->param->t_die)
-	{
+	{   
+        ft_print_status(philo, "died");
+        pthread_mutex_lock(philo->param->printer);
+        philo->param->finish_flag = 1;
+        ft_usleep(10);
 		pthread_mutex_unlock(philo->param->death);
-		philo->param->finish_flag = 1;
 		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_unlock(philo->right_fork);
-		return (ft_print_status(philo, "died"), 1);
+		return (1);
 	}
 	pthread_mutex_unlock(philo->param->death);
 	return (0);
