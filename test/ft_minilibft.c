@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_minilibft.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: esamad-j <esamad-j@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 20:22:53 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/26 13:56:53 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/10/26 17:02:38 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,3 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	}
 	return (0);
 }
-
-/* int	main (int ac, char **av)
-{
-	printf("%i\n", ft_atoi(av[1]));
-	return (0);
-} */
