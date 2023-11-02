@@ -6,18 +6,17 @@
 #    By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/26 16:14:11 by esamad-j          #+#    #+#              #
-#    Updated: 2023/10/26 20:15:07 by esamad-j         ###   ########.fr        #
+#    Updated: 2023/11/02 16:18:10 by esamad-j         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRCS = check_init.c exit.c ft_minilibft.c main.c thread.c
+SRCS = check_init.c exit.c main.c thread.c utils.c
 
 OBJS		= $(SRCS:%.c=%.o)
 
-#-g -fsanitize=thread 
-CFLAGS		=  -Wall -Werror -Wextra  #-g -fsanitize=thread 
+CFLAGS		= -Wall -Werror -Wextra  
 
 CC 			= gcc 
 

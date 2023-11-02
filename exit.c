@@ -6,7 +6,7 @@
 /*   By: esamad-j <esamad-j@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 21:34:52 by esamad-j          #+#    #+#             */
-/*   Updated: 2023/10/26 17:02:36 by esamad-j         ###   ########.fr       */
+/*   Updated: 2023/11/02 15:50:35 by esamad-j         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,32 +28,20 @@ void	error_msj(int num)
 		write(1, "Error: failed to create thread.\n", 32);
 }
 
-void	ft_exit_fail(t_param *data, t_philo *philo)
-{
-	pthread_mutex_destroy(data->death);
-	pthread_mutex_destroy(data->fork);
-	pthread_mutex_destroy(data->printer);
-	free(data->death);
-	free(data->fork);
-	free(data->printer);
-	free(philo);
-}
-
-void	end_thread(t_param *data, t_philo *philo)
+void	end_thread(t_world *world, t_philo *philo)
 {
 	int	i;
 
-	i = 0;
-	while (i < data->n_philo)
-	{
-		pthread_join(philo[i].thread_id, NULL);
-		i++;
-	}
-	pthread_mutex_destroy(data->death);
-	pthread_mutex_destroy(data->fork);
-	pthread_mutex_destroy(data->printer);
-	free(data->death);
-	free(data->fork);
-	free(data->printer);
+	i = -1;
+	while (++i < world->numbers_philo)
+		pthread_detach(philo[i].thread_id);
+	i = -1;
+	while (++i < world->numbers_philo)
+		pthread_mutex_destroy(&world->fork[i]);
+	pthread_mutex_destroy(&world->death);
+	pthread_mutex_destroy(&world->data_saver);
+	pthread_mutex_destroy(&world->printer);
+	free(world->fork);
 	free(philo);
+	free(world);
 }
